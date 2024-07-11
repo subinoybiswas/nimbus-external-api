@@ -49,6 +49,5 @@ export function normalizer(originalURL: string) {
 
         }
     })
-    console.log(path)
     return sendObj;
 }
