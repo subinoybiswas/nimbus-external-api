@@ -3,14 +3,12 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import { normalizer } from "./helpers/normalizer"
-import aws from 'aws-sdk';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import dotenv from "dotenv";
 import Sharp from 'sharp';
 
 dotenv.config();
-aws.config.update({ region: process.env.AWS_REGION, correctClockSkew: true });
-
-const s3 = new aws.S3();
+const s3Client = new S3Client();
 
 const app = express();
 
@@ -38,18 +36,15 @@ app.get('*', async (req, res) => {
   // console.log("SendObj", sendObj);
   if (!sendObj.format && !sendObj.width && !sendObj.height && !sendObj.quality) {
     try {
-      s3.getObject(params, (err, data) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ error: "File doesn't Exist" });
-        } else {
-          console.log('File downloaded successfully');
-          return res.send(data.Body).status(200);
-        }
-      });
+      const GetOriginalCmd = new GetObjectCommand(params);
+      const out = await s3Client.send(GetOriginalCmd);
+      return res.send(out.Body).status(200);
     } catch (err) {
+      if (err && (err as { name: string }).name === "NoSuchKey") {
+        return res.status(404).json({ error: "Image Not Found" });
+      }
       console.error(err);
-      return res.status(500).json({ error: "Server Error" });
+      return res.status(500).json({ error: "Error Downloading Image" });
     }
   } else {
     //Check if formatted exists
@@ -80,35 +75,15 @@ app.get('*', async (req, res) => {
     };
     // console.log(sendObj)
     try {
-      s3.getObject(params, (err, data) => {
-        if (err) {
-          if (err && err.code === 'NoSuchKey') {
-
-            s3.getObject(params, (err, data) => {
-              if (err) {
-                console.error(err);
-                return res.status(400).json({ error: "Original file doesn't Exist" });
-              } else {
-                let imageBody = data.Body;
-                if (imageBody) {
-                  imageBody = imageBody;
-                }
-
-
-              }
-            });
-
-          }
-          console.error(err);
-          return res.status(500).json({ error: "Error Occured" });
-        } else {
-          console.log('File downloaded successfully');
-          return res.send(data.Body).status(200);
-        }
-      });
+      const GetTransformedCmd = new GetObjectCommand(params);
+      const out = await s3Client.send(GetTransformedCmd);
+      return res.send(out.Body).status(200);
     } catch (err) {
+      if (err && (err as { name: string }).name === "NoSuchKey") {
+        return res.status(404).json({ error: "Transformed Image Not Found" });
+      }
       console.error(err);
-      return res.status(500).json({ error: "Server Error" });
+      return res.status(500).json({ error: "Error Fetching" });
     }
   }
 });
