@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import { Readable } from 'stream';
 import getFormattedName from './helpers/getFormattedName';
 import { convertWithSharp } from './helpers/convertWithSharp';
+import ratelimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -16,8 +17,18 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000", "https://image-resizer-frontend.vercel.app"],
+  methods: ["GET"]
+}));
 app.use(express.json());
+
+const limiter = ratelimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+});
+
+app.use(limiter)
 
 const originalBucket = process.env.S3_ORIGINAL_IMAGE_BUCKET as string;
 console.log("Original Bucket", originalBucket);
@@ -33,6 +44,7 @@ app.get('*', async (req, res) => {
   const originalparams = {
     Bucket: originalBucket,
     Key: sendObj.pathname.substring(1) as string
+
   };
   // console.log("Params", params);
   // console.log("SendObj", sendObj);
@@ -51,8 +63,8 @@ app.get('*', async (req, res) => {
     } catch (err) {
       if ((err as Error).name === "NoSuchKey") {
         console.error(err);
-        return res.status(404).json({ error: "Image Not Found" });
-      }
+        return res.status(500).json({ error: "Image Not Found" });
+      } 
       const errorDetails = {
         message: (err as Error).message,
         name: (err as Error).name,
