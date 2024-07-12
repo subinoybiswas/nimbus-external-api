@@ -29,7 +29,8 @@
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
-    "sharp": "^0.33.4"
+    "sharp": "^0.33.4",
+    "stream": "^0.0.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
