@@ -3,5 +3,5 @@ export default interface SendObj {
     height?: string,
     format?: string,
     quality?: string
-    pathname?: string
+    pathname: string
 };

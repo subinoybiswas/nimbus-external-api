@@ -7,6 +7,7 @@ import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3
 import dotenv from "dotenv";
 import Sharp from 'sharp';
 import { Readable } from 'stream';
+import getFormattedName from './helpers/getFormattedName';
 
 dotenv.config();
 const s3Client = new S3Client();
@@ -65,22 +66,7 @@ app.get('*', async (req, res) => {
     //Format Image Upload to S3
 
     const formattedBucket = process.env.S3_FORMATTED_IMAGE_BUCKET as string;
-    let formattedName = sendObj.pathname.substring(1).split('.')[0];
-
-    if (sendObj.width) {
-      formattedName += `_${sendObj.width}w`;
-    }
-    if (sendObj.height) {
-      formattedName += `_${sendObj.height}h`;
-    }
-    if (sendObj.quality) {
-      formattedName += `_${sendObj.quality}q`;
-    }
-    if (sendObj.format) {
-      formattedName += `.${sendObj.format}`;
-    } else {
-      formattedName += `.${sendObj.pathname.substring(1).split('.')[1]}`;
-    }
+    const formattedName = getFormattedName(sendObj)
 
     console.log(formattedName)
 
