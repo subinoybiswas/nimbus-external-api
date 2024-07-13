@@ -63,7 +63,7 @@ app.get('*', async (req, res) => {
     } catch (err) {
       if ((err as Error).name === "NoSuchKey") {
         console.error(err);
-        return res.status(500).json({ error: "Image Not Found" });
+        return res.status(404).json({ error: "Image Not Found" });
       }
       const errorDetails = {
         message: (err as Error).message,
@@ -131,7 +131,7 @@ app.get('*', async (req, res) => {
         }
       } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: "Error Transforming Image" });
+        return res.status(404).json({ error: "Error Transforming Image" });
       }
       console.error((err as Error));
       return res.status(500).json(err);
