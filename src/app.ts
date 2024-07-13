@@ -18,7 +18,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors({
-  origin: [process.env.PUBLIC_URL as string],
+  origin: ["https://nimbus-frontend-nu.vercel.app/"],
   methods: ["GET"]
 }));
 app.use(express.json());
