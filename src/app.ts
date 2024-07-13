@@ -18,7 +18,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors({
-  origin: ["http://localhost:3000", "https://image-resizer-frontend.vercel.app"],
+  origin: [process.env.PUBLIC_URL as string],
   methods: ["GET"]
 }));
 app.use(express.json());
@@ -64,7 +64,7 @@ app.get('*', async (req, res) => {
       if ((err as Error).name === "NoSuchKey") {
         console.error(err);
         return res.status(500).json({ error: "Image Not Found" });
-      } 
+      }
       const errorDetails = {
         message: (err as Error).message,
         name: (err as Error).name,
