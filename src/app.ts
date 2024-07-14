@@ -94,7 +94,7 @@ app.get('*', async (req, res) => {
       if (out.ContentType) {
         res.setHeader("Content-Type", out.ContentType);
         res.setHeader('Cache-Control', 'max-age=31536000, public');
-        res.setHeader('Content-Disposition', `attachment; filename="${originalparams.Key}"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${formattedparams.Key}"`);
 
         // res.setHeader('Content-Disposition', `attachment; filename="${formattedName}"`);
         //Set this to use download
@@ -126,7 +126,7 @@ app.get('*', async (req, res) => {
           if (type) {
             res.setHeader("Content-Type", type);
             res.setHeader('Cache-Control', 'max-age=31536000, public');
-            res.setHeader('Content-Disposition', `attachment; filename="${originalparams.Key}"`);
+            res.setHeader('Content-Disposition', `attachment; filename="${formattedparams.Key}"`);
 
           } else {
             res.setHeader("Content-Type", "");
