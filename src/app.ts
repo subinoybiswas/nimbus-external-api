@@ -56,7 +56,7 @@ app.get('*', async (req, res) => {
       if (out.ContentType) {
         res.setHeader("Content-Type", out.ContentType);
         res.setHeader('Cache-Control', 'max-age=31536000, public');
-        // res.setHeader('Content-Disposition', `attachment; filename="${originalparams.Key}"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${originalparams.Key}"`);
       }
       res.status(200);
       const readableStream = Readable.from(out.Body as any);
@@ -93,6 +93,9 @@ app.get('*', async (req, res) => {
       const out = await s3Client.send(GetTransformedCmd);
       if (out.ContentType) {
         res.setHeader("Content-Type", out.ContentType);
+        res.setHeader('Cache-Control', 'max-age=31536000, public');
+        res.setHeader('Content-Disposition', `attachment; filename="${originalparams.Key}"`);
+
         // res.setHeader('Content-Disposition', `attachment; filename="${formattedName}"`);
         //Set this to use download
       }
@@ -123,11 +126,13 @@ app.get('*', async (req, res) => {
           if (type) {
             res.setHeader("Content-Type", type);
             res.setHeader('Cache-Control', 'max-age=31536000, public');
+            res.setHeader('Content-Disposition', `attachment; filename="${originalparams.Key}"`);
+
           } else {
             res.setHeader("Content-Type", "");
           }
           res.status(200);
-          const readableStream = Readable.from([transformedBuffer]);
+          const readableStream = Readable.from(transformedBuffer);
           return readableStream.pipe(res);
 
         }
