@@ -18,7 +18,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors({
-  origin: ["https://nimbus-frontend-nu.vercel.app", "https://nimbus.sbn.lol", "http://localhost:3000"],
+  origin: ["https://nimbus-frontend-nu.vercel.app", "https://nimbus.sbn.lol"],
   methods: ["GET"]
 }));
 app.use(express.json());
