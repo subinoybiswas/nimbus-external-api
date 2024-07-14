@@ -18,7 +18,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors({
-  origin: ["https://nimbus-frontend-nu.vercel.app", "https://nimbus.sbn.lol"],
+  origin: ["https://nimbus-frontend-nu.vercel.app", "https://nimbus.sbn.lol", "http://localhost:3000"],
   methods: ["GET"]
 }));
 app.use(express.json());
@@ -55,6 +55,7 @@ app.get('*', async (req, res) => {
       console.log(out.ContentType);
       if (out.ContentType) {
         res.setHeader("Content-Type", out.ContentType);
+        res.setHeader('Cache-Control', 'max-age=31536000, public');
         // res.setHeader('Content-Disposition', `attachment; filename="${originalparams.Key}"`);
       }
       res.status(200);
@@ -114,13 +115,14 @@ app.get('*', async (req, res) => {
             Key: formattedName,
             ContentType: type,
             Metadata: {
-              'cache-control': "60",
+              'cache-control': "max-age=31536000"
             },
           }
           const PutImageCmd = new PutObjectCommand(putParams)
           await s3Client.send(PutImageCmd);
           if (type) {
             res.setHeader("Content-Type", type);
+            res.setHeader('Cache-Control', 'max-age=31536000, public');
           } else {
             res.setHeader("Content-Type", "");
           }
