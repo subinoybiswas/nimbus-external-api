@@ -11,6 +11,7 @@
 
 ## Architecture 
 This is the architecture diagram of Nimbus.
+![Architecture](architecture.png)
 
 ## Installation
 
