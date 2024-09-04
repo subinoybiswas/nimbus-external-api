@@ -63,7 +63,7 @@ Once the server is running, you can start processing images by providing a URL s
 ### Example URL
 
 ```bash
-https://nbs.sbn.lol?url=https://example.com/image.jpg&width=500&height=500&format=png
+https://nbs.sbn.lol/image.png?url=https://example.com/image.jpg&width=500&height=500&format=png
 ```
 
 ### Parameters
@@ -80,7 +80,7 @@ The server will return the processed image with the specified dimensions and for
 
 ## API Endpoints
 
-### `GET /`
+### `GET /[slug]`
 
 Converts an image based on the provided query parameters.
 
@@ -94,7 +94,7 @@ Converts an image based on the provided query parameters.
 ### Example Request
 
 ```bash
-GET https://nbs.sbn.lol?url=https://example.com/image.jpg&width=500&height=500&format=png
+GET https://nbs.sbn.lol/image.png?url=https://example.com/image.jpg&width=500&height=500&format=png
 ```
 
 
